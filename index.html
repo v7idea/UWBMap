@@ -101,7 +101,10 @@
                         </div>
                         <div class="col-6">
                             <input type="text" id="deviceAngle" class="form-control" placeholder="角度" aria-label="角度">
-                          </div>
+                        </div>
+                        <div class="col-6">
+                          <input type="text" id="deviceSpeed" class="form-control" placeholder="速度" aria-label="速度">
+                      </div>
                       </div>
                       <div class="row p-3">
                         <div class="col-12">
@@ -267,7 +270,7 @@
             changeDevicePoint();
 
             const clientId = 'mqttjs_' + Math.random().toString(16).substr(2, 8);
-            const host = 'ws://broker.emqx.io:8083/mqtt';
+            const host = 'wss://mqttiot.v7idea.com:443/mqtt';
 
             const options = {
                 keepalive: 60,
@@ -286,23 +289,119 @@
             };
 
             console.log('Connecting mqtt client');
+
             const client = mqtt.connect(host, options);
 
             client.on('error', (err) => {
-            console.log('Connection error: ', err)
-            client.end()
+            
+              console.log('Connection error: ', err);
+              client.end();
+            
             });
 
             client.on('reconnect', () => {
-            console.log('Reconnecting...')
+              console.log('Reconnecting...');
             });
 
             client.on('connect', () => {
-            console.log('Client connected:' + clientId)
-            // Subscribe
-            client.subscribe('testtopic', { qos: 0 })
+              console.log('Client connected:' + clientId);
+              // Subscribe, 訂閱001號
+              client.subscribe('IOTSmaple/Device/001', { qos: 0 });
+              
             });
+
+            // Received
+            client.on('message', (topic, message, packet) => {
+              console.log('Received Message: ' + message.toString() + '\nOn topic: ' + topic)
+            })
         
+
+            // 以下是測試車輛行走的測試，選定一個方向，並且以每秒速度0.1公尺到10公尺的隨機路線，走1分鐘，然後改變方向，繼續行走。
+
+            var testCar = {
+              angle: 0,
+              currentX: 0,
+              currentY: 0,
+              speed: 0,
+              id: "001",
+              currentTime: 0
+            };
+
+
+            function checkDemo() {
+
+              if(testCar.currentTime == 0) {
+
+                // 重新取得新的速度跟方向;
+
+                testCar.speed = Math.random() * 3 / 10;
+                testCar.angle = Math.floor(Math.random() * 360);
+
+              }
+
+              let tempAngle = Math.PI * testCar.angle / 180;
+
+            
+
+              testCar.currentX = testCar.currentX + Math.sin(tempAngle) * testCar.speed ;
+              testCar.currentY = testCar.currentY + Math.cos(tempAngle) * testCar.speed ;
+
+              // if(testCar.angle >= 0 && testCar.angle < 90) {
+              //     testCar.currentX = testCar.currentX + Math.sin(testCar.angle) * testCar.speed ;
+              //     testCar.currentY = testCar.currentY + Math.cos(testCar.angle) * testCar.speed ;
+              // } else if(testCar.angle >= 90 && testCar.angle < 180) {
+
+              //   let tempAngle = 180 - testCar.angle;
+
+              //   testCar.currentX = testCar.currentX + Math.sin(tempAngle) * testCar.speed ;
+              //   testCar.currentY = testCar.currentY - Math.cos(testCar.angle) * testCar.speed ;
+
+              // } else if(testCar.angle >= 180 && testCar.angle < 270) {
+
+              //   let tempAngle = testCar.angle - 180;
+
+              //   testCar.currentX = testCar.currentX - Math.sin(tempAngle) * testCar.speed ;
+              //   testCar.currentY = testCar.currentY - Math.cos(testCar.angle) * testCar.speed ;
+
+              // } else if(testCar.angle >= 270 && testCar.angle < 360) {
+
+              //   let tempAngle = 360 - testCar.angle;
+
+              //   testCar.currentX = testCar.currentX - Math.sin(tempAngle) * testCar.speed ;
+              //   testCar.currentY = testCar.currentY + Math.cos(testCar.angle) * testCar.speed ;
+
+              // }
+
+              let polarCoorPoint = positionToPolarCoordinate(testCar.currentX, testCar.currentY); // 轉換成極座標
+
+              
+
+              devicePoint = getLongLat (polarCoorPoint[0], polarCoorPoint[1], basePoint);
+              carAngle = testCar.angle;
+
+              $('#deviceLat').val(devicePoint[0]);
+              $('#deviceLng').val(devicePoint[1]);
+              $('#deviceX').val(testCar.currentX);
+              $('#deviceY').val(testCar.currentY );
+              $('#deviceAngle').val(carAngle );
+              $('#deviceSpeed').val(testCar.speed);
+
+              changeDevicePoint();
+
+              testCar.currentTime++;
+
+              if(testCar.currentTime > 60) {
+
+                testCar.currentTime = 0;
+
+              }
+
+            }            
+
+
+           var carDemoTimer = window.setInterval(checkDemo, 100);    // 設定每秒鐘執行一次
+
+
         </script>
 
        
