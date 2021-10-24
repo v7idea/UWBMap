@@ -197,8 +197,8 @@
             function changeCenterPoint() {
 
                 //alert('按下確認按鈕');
-                basePoint[0] =  $('#centerLat').val();
-                basePoint[1] =  $('#centerLng').val();
+                basePoint[0] =  parseFloat($('#centerLat').val());
+                basePoint[1] =  parseFloat($('#centerLng').val());
                 
                 map.panTo(new L.LatLng(basePoint[0], basePoint[1]));
                 flagObject.setLatLng(new L.LatLng(basePoint[0], basePoint[1]));
