@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="zh-tw">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>UWB Map Sample File</title>
+        <meta name="description" content="這是一個簡單的UWB地圖範例，使用OWB">
+        <meta name="author" content="Louis@v7idea">
+        <link rel="icon" href="/favicon.ico">
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <!-- css -->
+        <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+        crossorigin=""
+        /> 
+        <!-- js -->
+        <script
+        src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+        integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+        crossorigin="">
+        </script>    
+        <link rel="stylesheet" href="css/styles.css?v=1.0">  
+        <style>
+            html,body {
+                padding: 0;
+                margin: 0;
+            }
+
+            #mapBox {
+                width: 100%;
+                height: 100vh;
+                border-style:solid;
+                border-width: 2px;
+                border-color: #3d3d3d;
+                overflow:hidden;
+                position: relative;
+            }
+             #myMap {
+                width: 100%;
+                height: 100%;
+                position: relative;
+                
+            } 
+        </style>
+    </head>
+    <body>
+        <!-- content area -->
+        <div class="container">
+            <!-- Content here -->
+            <div class="row">
+                <div class="col-12" style="margin-top: 20px; margin-bottom: 20px;">
+                    <p class="display-6">UWB地圖顯示範例</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-9">
+                    <div id="mapBox">
+                        <div id="myMap"></div>
+                    </div>
+               </div>
+                <div class="col-3">
+                  <p class="h4">設定與顯示區域</p>
+                  <div class="container">
+                      <div class="row">
+                          <div class="col-12"><p class="h5">旗標點</p></div>
+                      </div>
+                      <div class="row g-3">
+                        <div class="col-6">
+                          <input type="text" id="centerLat" class="form-control" placeholder="緯度" aria-label="緯度">
+                        </div>
+                        <div class="col-6">
+                          <input type="text" id="centerLng" class="form-control" placeholder="經度" aria-label="經度">
+                        </div>
+                        <div class="col-6">
+                            <input type="text" id="carAngle" class="form-control" placeholder="角度" aria-label="角度">
+                          </div>
+                      </div>
+                      <div class="row p-3">
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary" onclick="changeCenterPoint();">修改</button>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-12">
+                            <hr>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-12"><p class="h5">載具資料</p></div>
+                      </div>
+                      <div class="row g-3">
+                        <div class="col-6">
+                          <input type="text" id="deviceX" class="form-control" placeholder="座標X" aria-label="座標X">
+                        </div>
+                        <div class="col-6">
+                          <input type="text" id="deviceY" class="form-control" placeholder="座標Y" aria-label="座標Y">
+                        </div>
+                        <div class="col-6">
+                            <input type="text" id="deviceAngle" class="form-control" placeholder="角度" aria-label="角度">
+                          </div>
+                      </div>
+                      <div class="row p-3">
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary mb-12" onclick="manualUpdateDevice();">修改</button>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-12">
+                            <hr>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-12"><p class="h5">系統換算</p></div>
+                      </div>
+                      <div class="row  g-3">
+                        <div class="col-6">
+                          <input type="text" id="deviceLat" class="form-control" placeholder="緯度" aria-label="緯度">
+                        </div>
+                        <div class="col-6">
+                          <input type="text" id="deviceLng" class="form-control" placeholder="經度" aria-label="經度">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
+        <script src="node_modules/jquery/dist/jquery.min.js"></script>
+        <script src="node_modules/mqtt/dist/mqtt.min.js"></script>
+         <!-- javascript area -->
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/uwb-osm.js"></script>
+        <script>
+
+            var basePoint = [25.05531,121.61039];       // 基準旗桿物件;
+            var devicePoint = [25.05535,121.61041];     // 載具的物件;
+            var centerPoint = [25.05531,121.61039];     // 基準中心點;
+            var carAngle = 0;
+
+            $('#centerLat').val(basePoint[0]);
+            $('#centerLng').val(basePoint[1]);
+            $('#carAngle').val(carAngle);
+            
+            // 設定基準點的標籤
+            var flagIcon = L.icon({
+                iconUrl: 'images/flag.png',
+                // shadowUrl: 'leaf-shadow.png',
+                iconSize:     [30, 37], // size of the icon
+                shadowSize:   [30, 30], // size of the shadow
+                iconAnchor:   [15, 18], // point of the icon which will correspond to marker's location
+                shadowAnchor: [15, 18],  // the same for the shadow
+                popupAnchor:  [0, -50] // point from which the popup should open relative to the iconAnchor
+            });
+
+            // 設定裝置的標籤
+            var carIcon = L.icon({
+                iconUrl: 'images/car_icon1.png',
+                // shadowUrl: 'leaf-shadow.png',
+                iconSize:     [60, 30], // size of the icon
+                shadowSize:   [60, 30], // size of the shadow
+                iconAnchor:   [30, 15], // point of the icon which will correspond to marker's location
+                shadowAnchor: [30, 15],  // the same for the shadow
+                popupAnchor:  [0, -40] // point from which the popup should open relative to the iconAnchor
+            });
+
+            // 設定地圖中心點與放大級別
+            const map = L.map("myMap", {
+            center: basePoint,
+            zoom: 21
+            });
+
+            // 載入圖資
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxNativeZoom: 19, // OSM max available zoom is at 19.
+            maxZoom: 24 // Match the map maxZoom, or leave map.options.maxZoom undefined.
+            }).addTo(map);
+
+            // 預設旗標的物件
+            let flagObject = L.marker(basePoint, {icon: flagIcon, rotationAngle: carAngle}).addTo(map);
+            // .bindPopup("預設的位置")
+            // .openPopup();
+
+            // 預設裝置的物件
+            let deviceObject = L.marker(devicePoint, {icon: carIcon, rotationAngle: carAngle - 90}).addTo(map);
+
+            // 改變旗標的位置，也改變中心位置
+            function changeCenterPoint() {
+
+                //alert('按下確認按鈕');
+                basePoint[0] =  $('#centerLat').val();
+                basePoint[1] =  $('#centerLng').val();
+                
+                map.panTo(new L.LatLng(basePoint[0], basePoint[1]));
+                flagObject.setLatLng(new L.LatLng(basePoint[0], basePoint[1]));
+                
+            }
+
+            // 改變裝置的位置與方向
+            function changeDevicePoint() {
+
+                // carAngle = $('#carAngle').val();
+                deviceObject.setLatLng(new L.LatLng(devicePoint[0], devicePoint[1]));
+                deviceObject.setRotationAngle(carAngle - 90);
+                
+            }
+
+            // 手動更新目前裝置的位置
+            function manualUpdateDevice() {
+                
+                let posX = $('#deviceX').val();
+                let posY = $('#deviceY').val();
+
+                let polarCoorPoint = positionToPolarCoordinate(posX, posY); // 轉換成極座標
+
+                devicePoint = getLongLat (polarCoorPoint[0], polarCoorPoint[1], basePoint);
+                carAngle = $('#deviceAngle').val();
+
+                changeDevicePoint();
+
+                $('#deviceLat').val(devicePoint[0]);
+                $('#deviceLng').val(devicePoint[1]);
+
+            }
+
+            function getLongLat(distance, angle, basePoint) {
+
+                let newPoint = [0.0, 0.0];
+
+                distance = distance * 0.001;
+
+                newPoint[0] = basePoint[0] + (distance * Math.cos(angle * Math.PI / 180)) / 111;
+                newPoint[1] = basePoint[1] + (distance * Math.sin(angle * Math.PI / 180)) / (111 * Math.cos( basePoint[0] * Math.PI/180));
+
+                return newPoint;
+
+            }
+
+            function positionToPolarCoordinate(x, y) {
+
+                let distance = Math.sqrt(x * x + y * y);
+                let angle = (((Math.atan2(y, x)) * 180 / Math.PI) - 90) % 360.0;
+
+                if(angle <= 0) {            // 將座標轉換從Y軸為0度
+                    angle = Math.abs(angle);
+                } else {
+                    angle = 360 - angle;
+                }
+
+                return [distance, angle];
+
+            }
+
+            // let PolarCoordinatePoint = positionToPolarCoordinate(-5, -5);
+            // alert('distance:' + PolarCoordinatePoint[0]);
+            // alert('angle:' + PolarCoordinatePoint[1]);
+
+            carAngle = 90;
+            devicePoint = getLongLat(0.02, 45, basePoint);
+
+            changeDevicePoint();
+
+            const clientId = 'mqttjs_' + Math.random().toString(16).substr(2, 8);
+            const host = 'ws://broker.emqx.io:8083/mqtt';
+
+            const options = {
+                keepalive: 60,
+                clientId: clientId,
+                protocolId: 'MQTT',
+                protocolVersion: 4,
+                clean: true,
+                reconnectPeriod: 1000,
+                connectTimeout: 30 * 1000,
+                will: {
+                    topic: 'WillMsg',
+                    payload: 'Connection Closed abnormally..!',
+                    qos: 0,
+                    retain: false
+                },
+            };
+
+            console.log('Connecting mqtt client');
+            const client = mqtt.connect(host, options);
+
+            client.on('error', (err) => {
+            console.log('Connection error: ', err)
+            client.end()
+            });
+
+            client.on('reconnect', () => {
+            console.log('Reconnecting...')
+            });
+
+            client.on('connect', () => {
+            console.log('Client connected:' + clientId)
+            // Subscribe
+            client.subscribe('testtopic', { qos: 0 })
+            });
+        
+        </script>
+
+       
+    </body>
+</html>
