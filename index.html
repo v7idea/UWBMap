@@ -335,7 +335,15 @@
                 // 重新取得新的速度跟方向;
 
                 testCar.speed = Math.random() * 3 / 10;
-                testCar.angle = Math.floor(Math.random() * 360);
+                
+                testCar.angle = testCar.angle +  Math.floor((Math.random()-0.5)* 180) ;
+
+                // 修正角度
+                if(testCar.angle < 0) {
+                  testCar.angle = 360 + testCar.angle;
+                } else if (testCar.angle > 360) {
+                  testCar.angle = testCar.angle - 360;
+                }
 
               }
 
