@@ -93,6 +93,9 @@
                         <div class="col-12"><p class="h5">載具資料</p></div>
                       </div>
                       <div class="row g-3">
+                        <div class="col-12">
+                          <input type="text" id="deviceId" class="form-control" placeholder="裝置ID" aria-label="裝置ID">
+                        </div>
                         <div class="col-6">
                           <input type="text" id="deviceX" class="form-control" placeholder="座標X" aria-label="座標X">
                         </div>
@@ -141,6 +144,8 @@
         <script src="js/uwb-osm.js"></script>
         <script>
 
+            const host = 'wss://mqttiot.v7idea.com:443/mqtt';
+            var deviceId = "A0001";
             var basePoint = [25.05531,121.61039];       // 基準旗桿物件;
             var devicePoint = [25.05535,121.61041];     // 載具的物件;
             var centerPoint = [25.05531,121.61039];     // 基準中心點;
@@ -149,7 +154,9 @@
             $('#centerLat').val(basePoint[0]);
             $('#centerLng').val(basePoint[1]);
             $('#carAngle').val(carAngle);
+            $('#deviceId').val(deviceId);
             
+
             // 設定基準點的標籤
             var flagIcon = L.icon({
                 iconUrl: 'images/flag.png',
@@ -270,7 +277,7 @@
             changeDevicePoint();
 
             const clientId = 'mqttjs_' + Math.random().toString(16).substr(2, 8);
-            const host = 'wss://mqttiot.v7idea.com:443/mqtt';
+            
 
             const options = {
                 keepalive: 60,
@@ -306,7 +313,7 @@
             client.on('connect', () => {
               console.log('Client connected:' + clientId);
               // Subscribe, 訂閱001號
-              client.subscribe('IOTSmaple/Device/001', { qos: 0 });
+              client.subscribe('IOTSmaple/Device/' + deviceId, { qos: 0 });
               
             });
 
