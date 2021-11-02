@@ -101,17 +101,6 @@
                         <input type="text" id="ancher0y" class="form-control" placeholder="y座標" aria-label="y座標">
                       </div>
                     </div>
-                    <div class="row p-3">
-                      <div class="col-12">
-                          <button type="submit" class="btn btn-primary" onclick="changeCenterPoint();">修改</button>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-12">
-                          <hr>
-                      </div>
-                    </div>
-
                       <div class="row">
                         <div class="col-12"><p class="h5">錨點1</p></div>
                       </div>
@@ -123,17 +112,6 @@
                         <input type="text" id="ancher1y" class="form-control" placeholder="y座標" aria-label="y座標">
                       </div>
                     </div>
-                    <div class="row p-3">
-                      <div class="col-12">
-                          <button type="submit" class="btn btn-primary" onclick="changeCenterPoint();">修改</button>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-12">
-                          <hr>
-                      </div>
-                    </div>
-
                     <div class="row">
                       <div class="col-12"><p class="h5">錨點2</p></div>
                     </div>
@@ -147,7 +125,7 @@
                   </div>
                   <div class="row p-3">
                     <div class="col-12">
-                        <button type="submit" class="btn btn-primary" onclick="changeCenterPoint();">修改</button>
+                        <button type="submit" class="btn btn-primary" onclick="updateAncher();">修改</button>
                     </div>
                   </div>
                   <div class="row">
@@ -634,6 +612,25 @@
                   }
 
 
+
+              }
+
+
+              function updateAncher() {
+
+                  ancher0[0] = parseFloat($('#ancher0x').val());
+                  ancher0[1] = parseFloat($('#ancher0y').val());
+                  ancher1[0] = parseFloat($('#ancher1x').val());
+                  ancher1[1] = parseFloat($('#ancher1y').val());
+                  ancher2[0] = parseFloat($('#ancher2x').val());
+                  ancher2[1] = parseFloat($('#ancher2y').val());
+
+                // $('#ancher0x').val(ancher0[0]);
+                // $('#ancher0y').val(ancher0[1]);
+                // $('#ancher1x').val(ancher1[0]);
+                // $('#ancher1y').val(ancher1[1]);
+                // $('#ancher2x').val(ancher2[0]);
+                // $('#ancher2y').val(ancher2[1]);
 
               }
 
