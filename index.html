@@ -560,10 +560,12 @@
                         let polarCoorPoint = positionToPolarCoordinate(devices[indexId].x, devices[indexId].y); // 轉換成極座標
                         let devicePoint = getLongLat (polarCoorPoint[0], polarCoorPoint[1], basePoint);
 
+                        console.log("id" + devices[indexId].id + ";Lat:" + devicePoint[0] + ";Lng:" + devicePoint[1]);
+
                         devices[indexId].lat = devicePoint[0]
                         devices[indexId].lng = devicePoint[1];
 
-                        devices[indexId].mapIcon.setLatLng(new L.LatLng(evices[indexId].lat, evices[indexId].lng));
+                        // devices[indexId].mapIcon.setLatLng(new L.LatLng(evices[indexId].lat, evices[indexId].lng));
 
                     } else {
 
@@ -592,10 +594,12 @@
                         let polarCoorPoint = positionToPolarCoordinate(devices[indexId].x, devices[indexId].y); // 轉換成極座標
                         let devicePoint = getLongLat (polarCoorPoint[0], polarCoorPoint[1], basePoint);
 
+                        console.log("id" + devices[indexId].id + ";Lat:" + devicePoint[0] + ";Lng:" + devicePoint[1]);
+
                         devices[indexId].lat = devicePoint[0]
                         devices[indexId].lng = devicePoint[1];
 
-                        L.marker(devicePoint, {icon: carIcon, rotationAngle: 0}).addTo(map);
+                        // L.marker(devicePoint, {icon: carIcon, rotationAngle: 0}).addTo(map);
 
                     }
 
