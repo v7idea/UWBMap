@@ -221,6 +221,7 @@
             var ancher2 = [1.0, 1.0];
             var carAngle = 0;
             var devices = {};
+            var isDebugMode = false;
 
             $('#centerLat').val(basePoint[0]);
             $('#centerLng').val(basePoint[1]);
@@ -535,7 +536,7 @@
 
               function updateDevices(topic, message) {
 
-                  console.log(message.toString());
+                if(isDebugMode) {console.log(message.toString());}
 
                   let data = JSON.parse(message.toString());
 
@@ -559,7 +560,7 @@
                         devices[indexId].dis6 = data.dis6 / 100.0;
                         devices[indexId].dis7 = data.dis7 / 100.0;
 
-                        console.log("id" + devices[indexId].id + ";dis0:" + devices[indexId].dis0 + ";dis1:" + devices[indexId].dis1 + ";dis2:" + devices[indexId].dis2);
+                        if(isDebugMode) {console.log("id" + devices[indexId].id + ";dis0:" + devices[indexId].dis0 + ";dis1:" + devices[indexId].dis1 + ";dis2:" + devices[indexId].dis2);}
 
                         let newLocation = getTrilateration(ancher0, ancher1, ancher2, devices[indexId].dis0, devices[indexId].dis1, devices[indexId].dis2);
 
@@ -567,12 +568,12 @@
                         devices[indexId].x = newLocation[0];
                         devices[indexId].y = newLocation[1];
 
-                        console.log("id" + devices[indexId].id + ";x:" + newLocation[0] + ";y:" + newLocation[1]);
+                        if(isDebugMode) {console.log("id" + devices[indexId].id + ";x:" + newLocation[0] + ";y:" + newLocation[1]);}
 
                         let polarCoorPoint = positionToPolarCoordinate(devices[indexId].x, devices[indexId].y); // 轉換成極座標
                         let devicePoint = getLongLat (polarCoorPoint[0], polarCoorPoint[1], basePoint);
 
-                        console.log("id" + devices[indexId].id + ";Lat:" + devicePoint[0] + ";Lng:" + devicePoint[1]);
+                        if(isDebugMode) {console.log("id" + devices[indexId].id + ";Lat:" + devicePoint[0] + ";Lng:" + devicePoint[1]);}
 
                         devices[indexId].lat = devicePoint[0]
                         devices[indexId].lng = devicePoint[1];
@@ -597,7 +598,7 @@
                         devices[indexId].dis6 = data.dis6 / 100.0;
                         devices[indexId].dis7 = data.dis7 / 100.0;
                         
-                        console.log("id" + devices[indexId].id + ";dis0:" + devices[indexId].dis0 + ";dis1:" + devices[indexId].dis1 + ";dis2:" + devices[indexId].dis2);
+                        if(isDebugMode) {console.log("id" + devices[indexId].id + ";dis0:" + devices[indexId].dis0 + ";dis1:" + devices[indexId].dis1 + ";dis2:" + devices[indexId].dis2);}
 
                         let newLocation = getTrilateration(ancher0, ancher1, ancher2, devices[indexId].dis0, devices[indexId].dis1, devices[indexId].dis2);
 
@@ -605,12 +606,12 @@
                         devices[indexId].x = newLocation[0];
                         devices[indexId].y = newLocation[1];
 
-                        console.log("id" + devices[indexId].id + ";x:" + newLocation[0] + ";y:" + newLocation[1]);
+                        if(isDebugMode) {console.log("id" + devices[indexId].id + ";x:" + newLocation[0] + ";y:" + newLocation[1]);}
 
                         let polarCoorPoint = positionToPolarCoordinate(devices[indexId].x, devices[indexId].y); // 轉換成極座標
                         let devicePoint = getLongLat (polarCoorPoint[0], polarCoorPoint[1], basePoint);
 
-                        console.log("id" + devices[indexId].id + ";Lat:" + devicePoint[0] + ";Lng:" + devicePoint[1]);
+                        if(isDebugMode) {console.log("id" + devices[indexId].id + ";Lat:" + devicePoint[0] + ";Lng:" + devicePoint[1]);}
 
                         devices[indexId].lat = devicePoint[0]
                         devices[indexId].lng = devicePoint[1];
