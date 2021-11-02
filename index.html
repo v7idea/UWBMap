@@ -511,6 +511,12 @@
                 var rb = distance1;
                 var rc = distance2;
 
+                console.log("getTrilateration function result, xa:" + xa + ";ya:" + ya);
+                console.log("getTrilateration function result, xb:" + xb + ";yb:" + yb);
+                console.log("getTrilateration function result, xc:" + xc + ";yc:" + yc);
+                console.log("getTrilateration function result, ra:" + xra + ";rb:" + rb + ";rc:" + rc);
+
+
                 var S = (Math.pow(xc, 2.) - Math.pow(xb, 2.) + Math.pow(yc, 2.) - Math.pow(yb, 2.) + Math.pow(rb, 2.) - Math.pow(rc, 2.)) / 2.0;
                 var T = (Math.pow(xa, 2.) - Math.pow(xb, 2.) + Math.pow(ya, 2.) - Math.pow(yb, 2.) + Math.pow(rb, 2.) - Math.pow(ra, 2.)) / 2.0;
                 var y = ((T * (xb - xc)) - (S * (xb - xa))) / (((ya - yb) * (xb - xc)) - ((yc - yb) * (xb - xa)));
