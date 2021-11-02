@@ -551,11 +551,15 @@
                         devices[indexId].dis6 = data.dis6 / 100.0;
                         devices[indexId].dis7 = data.dis7 / 100.0;
 
+                        console.log("id" + devices[indexId].id + ";dis0:" + devices[indexId].dis0 + ";dis1:" + devices[indexId].dis1 + ";dis2:" + devices[indexId].dis2);
+
                         let newLocation = getTrilateration(ancher0, ancher1, ancher2, devices[indexId].dis0, devices[indexId].dis1, devices[indexId].dis2);
 
                         // 得到新的二維座標;
                         devices[indexId].x = newLocation[0];
                         devices[indexId].y = newLocation[1];
+
+                        console.log("id" + devices[indexId].id + ";x:" + newLocation[0] + ";y:" + newLocation[1]);
 
                         let polarCoorPoint = positionToPolarCoordinate(devices[indexId].x, devices[indexId].y); // 轉換成極座標
                         let devicePoint = getLongLat (polarCoorPoint[0], polarCoorPoint[1], basePoint);
@@ -584,12 +588,16 @@
                         devices[indexId].dis5 = data.dis5 / 100.0;
                         devices[indexId].dis6 = data.dis6 / 100.0;
                         devices[indexId].dis7 = data.dis7 / 100.0;
+                        
+                        console.log("id" + devices[indexId].id + ";dis0:" + devices[indexId].dis0 + ";dis1:" + devices[indexId].dis1 + ";dis2:" + devices[indexId].dis2);
 
                         let newLocation = getTrilateration(ancher0, ancher1, ancher2, devices[indexId].dis0, devices[indexId].dis1, devices[indexId].dis2);
 
                         // 得到新的二維座標;
                         devices[indexId].x = newLocation[0];
                         devices[indexId].y = newLocation[1];
+
+                        console.log("id" + devices[indexId].id + ";x:" + newLocation[0] + ";y:" + newLocation[1]);
 
                         let polarCoorPoint = positionToPolarCoordinate(devices[indexId].x, devices[indexId].y); // 轉換成極座標
                         let devicePoint = getLongLat (polarCoorPoint[0], polarCoorPoint[1], basePoint);
