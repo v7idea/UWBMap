@@ -400,7 +400,7 @@
             // Received
             client.on('message', (topic, message, packet) => {
               
-              console.log('Received Message: ' + message.toString() + '\nOn topic: ' + topic)
+              // console.log('Received Message: ' + message.toString() + '\nOn topic: ' + topic)
               updateDevices(topic, message);
 
             })
@@ -527,12 +527,12 @@
 
               function updateDevices(topic, data) {
 
-                  if(data.id != undefined) {
+                  if(typeof(data.id) != 'undefined') {
 
                     let indexId = "index_" + data.id;
 
                     // 表示有抓到物件
-                    if(devices[indexId] != undefined) {
+                    if(typeof(devices[indexId]) != 'undefined') {
 
                         // 表示已經有該物件了;
                         devices[indexId].posX = data.posX / 1000.0;
