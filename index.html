@@ -516,6 +516,8 @@
                 var y = ((T * (xb - xc)) - (S * (xb - xa))) / (((ya - yb) * (xb - xc)) - ((yc - yb) * (xb - xa)));
                 var x = ((y * (ya - yb)) - T) / (xb - xa);
 
+                console.log("getTrilateration function result, x:" + x + ";y:" + y);
+
                 return [x, y];
 
                 // return {
