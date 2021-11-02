@@ -581,7 +581,7 @@
                         if(typeof(devices[indexId].mapIcon) == 'undefined') {
                           devices[indexId].mapIcon =  L.marker(devicePoint, {icon: carIcon, rotationAngle: 0}).addTo(map);
                         } else {
-                          devices[indexId].mapIcon.setLatLng(new L.LatLng(evices[indexId].lat, evices[indexId].lng));
+                          devices[indexId].mapIcon.setLatLng(new L.LatLng(devices[indexId].lat, devices[indexId].lng));
                         }
 
                         // 
