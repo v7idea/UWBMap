@@ -89,6 +89,73 @@
                             <hr>
                         </div>
                       </div>
+
+                      <div class="row">
+                        <div class="col-12"><p class="h5">錨點0</p></div>
+                      </div>
+                      <div class="row g-3">
+                      <div class="col-6">
+                        <input type="text" id="ancher0X" class="form-control" placeholder="x座標" aria-label="x座標">
+                      </div>
+                      <div class="col-6">
+                        <input type="text" id="ancher0y" class="form-control" placeholder="y座標" aria-label="y座標">
+                      </div>
+                    </div>
+                    <div class="row p-3">
+                      <div class="col-12">
+                          <button type="submit" class="btn btn-primary" onclick="changeCenterPoint();">修改</button>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-12">
+                          <hr>
+                      </div>
+                    </div>
+
+                      <div class="row">
+                        <div class="col-12"><p class="h5">錨點1</p></div>
+                      </div>
+                      <div class="row g-3">
+                      <div class="col-6">
+                        <input type="text" id="ancher1X" class="form-control" placeholder="x座標" aria-label="x座標">
+                      </div>
+                      <div class="col-6">
+                        <input type="text" id="ancher1y" class="form-control" placeholder="y座標" aria-label="y座標">
+                      </div>
+                    </div>
+                    <div class="row p-3">
+                      <div class="col-12">
+                          <button type="submit" class="btn btn-primary" onclick="changeCenterPoint();">修改</button>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-12">
+                          <hr>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-12"><p class="h5">錨點2</p></div>
+                    </div>
+                    <div class="row g-3">
+                    <div class="col-6">
+                      <input type="text" id="ancher2X" class="form-control" placeholder="x座標" aria-label="x座標">
+                    </div>
+                    <div class="col-6">
+                      <input type="text" id="ancher2y" class="form-control" placeholder="y座標" aria-label="y座標">
+                    </div>
+                  </div>
+                  <div class="row p-3">
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary" onclick="changeCenterPoint();">修改</button>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+                        <hr>
+                    </div>
+                  </div>
+
                       <div class="row">
                         <div class="col-12"><p class="h5">載具資料</p></div>
                       </div>
@@ -149,12 +216,24 @@
             var basePoint = [22.65084, 120.35054];       // 基準旗桿物件;
             var devicePoint = [22.65084, 120.35054];     // 載具的物件;
             var centerPoint = [22.65084, 120.35054];     // 基準中心點;
+            var ancher0 = [0.0, 0.0];
+            var ancher1 = [0.0, 1.0];
+            var ancher2 = [1.0, 1.0];
             var carAngle = 0;
 
             $('#centerLat').val(basePoint[0]);
             $('#centerLng').val(basePoint[1]);
             $('#carAngle').val(carAngle);
             $('#deviceId').val(deviceId);
+            
+            // 增加錨點的設置
+            
+            $('#ancher0x').val(ancher0[0]);
+            $('#ancher0y').val(ancher0[1]);
+            $('#ancher1x').val(ancher1[0]);
+            $('#ancher1y').val(ancher1[1]);
+            $('#ancher2x').val(ancher2[0]);
+            $('#ancher2y').val(ancher2[1]);
             
 
             // 設定基準點的標籤
@@ -313,7 +392,7 @@
             client.on('connect', () => {
               console.log('Client connected:' + clientId);
               // Subscribe, 訂閱001號
-              client.subscribe('IOTSmaple/Device/' + deviceId, { qos: 0 });
+              client.subscribe('IOTSmaple/Device/#', { qos: 0 });
               
             });
 
@@ -415,6 +494,32 @@
 
 
            var carDemoTimer = window.setInterval(checkDemo, 100);    // 設定每秒鐘執行一次
+
+           function getTrilateration(Anchor0, Anchor1, Anchor2, distance0, distance1, distance2) {
+
+                var xa = Anchor0[0];
+                var ya = Anchor0[1];
+                var xb = Anchor1[0];
+                var yb = Anchor1[1];
+                var xc = Anchor2[0];
+                var yc = Anchor2[1];
+                var ra = distance0;
+                var rb = distance1;
+                var rc = distance2;
+
+                var S = (Math.pow(xc, 2.) - Math.pow(xb, 2.) + Math.pow(yc, 2.) - Math.pow(yb, 2.) + Math.pow(rb, 2.) - Math.pow(rc, 2.)) / 2.0;
+                var T = (Math.pow(xa, 2.) - Math.pow(xb, 2.) + Math.pow(ya, 2.) - Math.pow(yb, 2.) + Math.pow(rb, 2.) - Math.pow(ra, 2.)) / 2.0;
+                var y = ((T * (xb - xc)) - (S * (xb - xa))) / (((ya - yb) * (xb - xc)) - ((yc - yb) * (xb - xa)));
+                var x = ((y * (ya - yb)) - T) / (xb - xa);
+
+                return [x, y];
+
+                // return {
+                //     x: x,
+                //     y: y
+                // };
+            
+              }
 
 
         </script>
