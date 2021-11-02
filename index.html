@@ -527,6 +527,8 @@
 
               function updateDevices(topic, data) {
 
+                  console.log(data);
+
                   if(typeof(data.id) != 'undefined') {
 
                     let indexId = "index_" + data.id;
