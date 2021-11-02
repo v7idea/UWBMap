@@ -95,7 +95,7 @@
                       </div>
                       <div class="row g-3">
                       <div class="col-6">
-                        <input type="text" id="ancher0X" class="form-control" placeholder="x座標" aria-label="x座標">
+                        <input type="text" id="ancher0x" class="form-control" placeholder="x座標" aria-label="x座標">
                       </div>
                       <div class="col-6">
                         <input type="text" id="ancher0y" class="form-control" placeholder="y座標" aria-label="y座標">
@@ -117,7 +117,7 @@
                       </div>
                       <div class="row g-3">
                       <div class="col-6">
-                        <input type="text" id="ancher1X" class="form-control" placeholder="x座標" aria-label="x座標">
+                        <input type="text" id="ancher1x" class="form-control" placeholder="x座標" aria-label="x座標">
                       </div>
                       <div class="col-6">
                         <input type="text" id="ancher1y" class="form-control" placeholder="y座標" aria-label="y座標">
@@ -139,7 +139,7 @@
                     </div>
                     <div class="row g-3">
                     <div class="col-6">
-                      <input type="text" id="ancher2X" class="form-control" placeholder="x座標" aria-label="x座標">
+                      <input type="text" id="ancher2x" class="form-control" placeholder="x座標" aria-label="x座標">
                     </div>
                     <div class="col-6">
                       <input type="text" id="ancher2y" class="form-control" placeholder="y座標" aria-label="y座標">
@@ -220,6 +220,7 @@
             var ancher1 = [0.0, 1.0];
             var ancher2 = [1.0, 1.0];
             var carAngle = 0;
+            var devices = {};
 
             $('#centerLat').val(basePoint[0]);
             $('#centerLng').val(basePoint[1]);
@@ -398,7 +399,10 @@
 
             // Received
             client.on('message', (topic, message, packet) => {
+              
               console.log('Received Message: ' + message.toString() + '\nOn topic: ' + topic)
+              updateDevices(topic, message);
+
             })
         
 
@@ -519,6 +523,87 @@
                 //     y: y
                 // };
             
+              }
+
+              function updateDevices(topic, data) {
+
+                  if(data.id != undefined) {
+
+                    let indexId = "index_" + data.id;
+
+                    // 表示有抓到物件
+                    if(devices[indexId] != undefined) {
+
+                        // 表示已經有該物件了;
+                        devices[indexId].posX = data.posX / 1000.0;
+                        devices[indexId].posY = data.posY / 1000.0;
+                        devices[indexId].posZ = data.posZ / 1000.0;
+                        devices[indexId].dis0 = data.dis0 / 100.0;
+                        devices[indexId].dis1 = data.dis1 / 100.0;
+                        devices[indexId].dis2 = data.dis2 / 100.0;
+                        devices[indexId].dis3 = data.dis3 / 100.0;
+                        devices[indexId].dis4 = data.dis4 / 100.0;
+                        devices[indexId].dis5 = data.dis5 / 100.0;
+                        devices[indexId].dis6 = data.dis6 / 100.0;
+                        devices[indexId].dis7 = data.dis7 / 100.0;
+
+                        let newLocation = getTrilateration(ancher0, ancher1, ancher2, devices[indexId].dis0, devices[indexId].dis1, devices[indexId].dis2);
+
+                        // 得到新的二維座標;
+                        devices[indexId].x = newLocation[0];
+                        devices[indexId].y = newLocation[1];
+
+                        let polarCoorPoint = positionToPolarCoordinate(devices[indexId].x, devices[indexId].y); // 轉換成極座標
+                        let devicePoint = getLongLat (polarCoorPoint[0], polarCoorPoint[1], basePoint);
+
+                        devices[indexId].lat = devicePoint[0]
+                        devices[indexId].lng = devicePoint[1];
+
+                        devices[indexId].mapIcon.setLatLng(new L.LatLng(evices[indexId].lat, evices[indexId].lng));
+
+                    } else {
+
+                        console.log("new device, id:" + data.id);
+                        devices[indexId] = {};
+                        devices[indexId].id = data.id;
+                        devices[indexId].role = data.role;
+                        devices[indexId].posX = data.posX / 1000.0;
+                        devices[indexId].posY = data.posY / 1000.0;
+                        devices[indexId].posZ = data.posZ / 1000.0;
+                        devices[indexId].dis0 = data.dis0 / 100.0;
+                        devices[indexId].dis1 = data.dis1 / 100.0;
+                        devices[indexId].dis2 = data.dis2 / 100.0;
+                        devices[indexId].dis3 = data.dis3 / 100.0;
+                        devices[indexId].dis4 = data.dis4 / 100.0;
+                        devices[indexId].dis5 = data.dis5 / 100.0;
+                        devices[indexId].dis6 = data.dis6 / 100.0;
+                        devices[indexId].dis7 = data.dis7 / 100.0;
+
+                        let newLocation = getTrilateration(ancher0, ancher1, ancher2, devices[indexId].dis0, devices[indexId].dis1, devices[indexId].dis2);
+
+                        // 得到新的二維座標;
+                        devices[indexId].x = newLocation[0];
+                        devices[indexId].y = newLocation[1];
+
+                        let polarCoorPoint = positionToPolarCoordinate(devices[indexId].x, devices[indexId].y); // 轉換成極座標
+                        let devicePoint = getLongLat (polarCoorPoint[0], polarCoorPoint[1], basePoint);
+
+                        devices[indexId].lat = devicePoint[0]
+                        devices[indexId].lng = devicePoint[1];
+
+                        L.marker(devicePoint, {icon: carIcon, rotationAngle: 0}).addTo(map);
+
+                    }
+
+
+                  } else {
+
+                    console.log("errorObj, can't update the devices");
+
+                  }
+
+
+
               }
 
 
